@@ -9,7 +9,7 @@
 namespace Proxima\JobBundle\Registry;
 
 
-interface DagDefinitionInterface
+interface DagDefinitionInterface extends \Traversable
 {
-    public function next();
+
 }

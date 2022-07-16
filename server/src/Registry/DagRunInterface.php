@@ -11,5 +11,8 @@ namespace Proxima\JobBundle\Registry;
 
 interface DagRunInterface
 {
-    public  function define():DagDefinitionInterface;
+    /**
+     * @return callable[]
+     */
+    public function define(): array;
 }

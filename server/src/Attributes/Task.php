@@ -8,11 +8,29 @@
 
 namespace Proxima\JobBundle\Attributes;
 
+use \Attribute;
+
 #[Attribute(Attribute::TARGET_METHOD)]
-abstract class Task
+class Task
 {
     /**
      * @var ?string
      */
     public $name = "";
+
+    /**
+     * Task constructor.
+     * @param string $name
+     */
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+
+    public function __toString()
+    {
+        return sprintf("%s(name=%s)\n", self::class, $this->name);
+    }
+
 }

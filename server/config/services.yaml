@@ -1,0 +1,5 @@
+parameters:
+  proxima_job:
+    dag:
+      namespace: 'App\Dags'
+      root_path: '%kernel.project%../dags'
