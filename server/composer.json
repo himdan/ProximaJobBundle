@@ -1,0 +1,25 @@
+{
+    "name": "proxima/job",
+    "description": "dag",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Proxima\\JobBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Proxima\\JobBundle\\Tests": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "react/http": "^1.6",
+        "react/socket": "^1.11",
+        "symfony/http-kernel": "^6.1",
+        "symfony/console": "^6.1",
+        "symfony/workflow": "^6.1",
+        "symfony/finder": "^6.1"
+    }
+}

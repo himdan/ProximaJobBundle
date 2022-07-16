@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  catapult_server:
+    image: nginx:latest
+    volumes:
+      - "./infra/nginx:/etc/nginx/conf.d"
+
+  catapult_console:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+        - "./server:/var/www/default/htdocs"
