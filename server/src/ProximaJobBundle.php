@@ -36,14 +36,5 @@ class ProximaJobBundle extends AbstractBundle
         parent::configure($definition);
     }
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-
-        $container->services()
-            ->get(DagConfigurator::class)
-            ->arg(0, $config['dag']['namespace'])
-            ->arg(1, $config['dag']['root_path']);
-    }
-
 
 }

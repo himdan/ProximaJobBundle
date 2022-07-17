@@ -44,7 +44,6 @@ class DagRegistry implements LoggerAwareInterface
         $finder->files()->in($projectDir)->name('*.php');
         foreach ($finder as $file) {
             $className = rtrim($namespace, '\\') . '\\' . $file->getFilenameWithoutExtension();
-            echo $className;
             if (class_exists($className)) {
                 $this->registerSingleDagInstance($className);
             }
@@ -94,6 +93,6 @@ class DagRegistry implements LoggerAwareInterface
 
     private function compile(Dag $dag, Task $task)
     {
-        echo "\n $dag $task";
+        echo "\n $dag $task \n";
     }
 }
