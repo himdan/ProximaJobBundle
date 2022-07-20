@@ -46,11 +46,6 @@ class TaskRunCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-
-        $output->writeln($input->getOption('dag'));
-        $output->writeln($input->getOption('task'));
-        $output->writeln($input->getOption('args'));
         $dag = $input->getOption('dag');
         $task = $input->getOption('task');
         $args = @json_decode($input->getOption('args'));

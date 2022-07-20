@@ -92,8 +92,7 @@ class TaskMessageHandlerTest extends WebTestCase
 
         $handler = $this->messageHandler;
         $handler($message);
-        echo $message->getOutput();
-        $this->assertNotNull($message->getOutput());
+        $this->assertEquals($message->getStatus(), TaskMessage::SUCCESS);
     }
 
 }
