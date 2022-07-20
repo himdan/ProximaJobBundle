@@ -33,7 +33,7 @@ class TestDag implements DagRunInterface
     #[Task("task_1")]
     public function task_1(): TaskRunInterface
     {
-
+        sleep(10);
     }
 
     #[Task("task_2")]

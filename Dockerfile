@@ -1,5 +1,5 @@
 FROM devilbox/php-fpm-8.1
-ARG PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --disable-cgi --enable-fd-setsize=2048
+ARG PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --disable-cgi --enable-fd-setsize=2048  --enable-pcntl
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
@@ -31,7 +31,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         dom\
         mbstring \
         calendar \
-        intl
+        intl \
+        pcntl
 COPY infra/fpm/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY infra/fpm/custom.ini /usr/local/etc/php/conf.d/custom.ini
 

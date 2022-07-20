@@ -44,7 +44,7 @@ class TaskRunCommandTest extends TestCase
         $this->taskResolver = new TaskResolver($this->container);
         $application = new Application();
         $application->add(new TaskRunCommand($this->taskResolver));
-        $command = $application->find('proxima_job:run_task');
+        $command = $application->find('proxima_job:task_run');
         $this->commandTester = new CommandTester($command);
     }
 

@@ -11,63 +11,100 @@ namespace Proxima\JobBundle\Message;
 
 class TaskMessage
 {
+
     /**
-     * @var string $command
-     */
-    private $command;
-    /**
-     * @var array $args
+     * @var ?string $args
      */
     private $args;
     /**
-     * @var array $options ;
+     * @var ?string
      */
-    private $options;
+    private $dag;
+    /**
+     * @var ?string
+     */
+    private $task;
+    /**
+     * @var ?string
+     */
+    private $output;
+
+    const COMMAND = 'proxima_job:task_run';
 
     /**
      * TaskMessage constructor.
-     * @param string $command
-     * @param array $args
-     * @param array $options
+     * @param $dag
+     * @param $task
+     * @param $args
      */
-    public function __construct(string $command="proxima:task_run", array $args = [], array $options = [])
+    public function __construct($dag, $task, $args)
     {
-        $this->command = $command;
         $this->args = $args;
-        $this->options = $options;
+        $this->dag = $dag;
+        $this->task = $task;
     }
 
-    /**
-     * @return string
-     */
-    public function getCommand(): string
+
+    public function asProcess()
     {
-        return $this->command;
+        return [
+            'php',
+            'bin/console',
+            self::COMMAND,
+            "--dag",
+            sprintf("%s", $this->getDag()),
+            "--task",
+            sprintf("%s", $this->getTask()),
+            "--args",
+            sprintf("%s", $this->getArgs())
+
+        ];
+
     }
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function getArgs(): array
+    public function getArgs()
     {
         return $this->args;
     }
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function getOptions(): array
+    public function getDag()
     {
-        return $this->options;
+        return $this->dag;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param mixed $output
+     */
+    public function setOutput($output): void
+    {
+        $this->output = $output;
     }
 
 
-    public function asCommand()
-    {
-        return array_merge([
-            'command' => $this->getCommand()
-        ], $this->getOptions(), $this->getArgs());
-    }
+
+
 
 
 }

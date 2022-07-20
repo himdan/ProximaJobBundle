@@ -10,49 +10,26 @@ namespace Proxima\JobBundle\MessageHandler;
 
 
 use Proxima\JobBundle\Message\TaskMessage;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Process\Process;
 
-abstract class TaskMessageHandler
+class TaskMessageHandler implements MessageHandlerInterface
 {
-    /**
-     * @var KernelInterface $kernel
-     */
-    private $kernel;
-
-    /**
-     * TaskMessageHandler constructor.
-     * @param KernelInterface $kernel
-     */
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
 
 
     public function __invoke(TaskMessage $taskMessage)
     {
-        $application = new Application();
-        $input = new ArrayInput($taskMessage->asCommand());
-        $output = new BufferedOutput();
-        $code = $application->run($input, $output);
-        $content = $output->fetch();
-        if ($code !== 0) {
-            $this->triggerFailure($taskMessage, $content);
-            return 0;
+        $process = new Process($taskMessage->asProcess());
+        $process->start();
+
+        foreach ($process as $type => $data) {
+            if ($process::OUT === $type) {
+                echo "\nRead from stdout: ".$data;
+                $taskMessage->setOutput($data);
+            } else {
+                // $process::ERR === $type
+                echo "\nRead from stderr: ".$data;
+            }
         }
-
-        $this->triggerSuccess($taskMessage, $content);
     }
-
-
-     protected function triggerFailure($taskMessage, $content){
-
-     }
-
-     protected function triggerSuccess($taskMessage, $content){
-
-     }
 }

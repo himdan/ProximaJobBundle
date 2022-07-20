@@ -3,3 +3,32 @@ parameters:
     dag:
       namespace: 'App\Dags'
       root_path: '%kernel.project_dir%../dags'
+
+# config/services.yaml
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  Proxima\JobBundle\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
+
+  Proxima\JobBundle\Tests\Dags\:
+    resource: '../tests/dags/*'
+
+  Proxima\JobBundle\Registry\DagKernelInterface:
+    alias: Proxima\JobBundle\Registry\DagConfigurator
+
+  Symfony\Component\DependencyInjection\ContainerInterface:
+    alias: "service_container"
+
+  Proxima\JobBundle\Command\TaskRunCommand:
+    tags:
+      - { name: 'console.command', command: 'proxima_job:task_run' }
+
+  Proxima\JobBundle\Tests\Dags\TestDag:
+    public: true

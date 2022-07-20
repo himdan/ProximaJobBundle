@@ -9,6 +9,7 @@
 namespace Proxima\JobBundle\Command;
 
 use Proxima\JobBundle\Discovery\TaskResolver;
+use Proxima\JobBundle\Message\TaskMessage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,7 +25,7 @@ class TaskRunCommand extends Command
 
     public function __construct(TaskResolver $taskResolver)
     {
-        parent::__construct('proxima_job:run_task');
+        parent::__construct(TaskMessage::COMMAND);
         $this->taskResolver = $taskResolver;
     }
 
@@ -32,7 +33,7 @@ class TaskRunCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('proxima_job:run_task')
+            ->setName(TaskMessage::COMMAND)
             ->addOption('dag', null, InputOption::VALUE_REQUIRED)
             ->addOption('task', null, InputOption::VALUE_REQUIRED)
             ->addOption('args', null, InputOption::VALUE_REQUIRED);
