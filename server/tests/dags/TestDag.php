@@ -29,22 +29,28 @@ class TestDag implements DagRunInterface
             [$this, 'task_3'],
         ];
     }
-
+    /**
+     * @return TaskRunInterface|void
+     */
     #[Task("task_1")]
-    public function task_1(): TaskRunInterface
+    public function task_1()
     {
-        sleep(10);
+        sleep(5);
+    }
+    /**
+     * @throws \Exception
+     */
+    #[Task("task_2")]
+    public function task_2()
+    {
+        throw new \Exception('I Failed');
     }
 
+    /**
+     * @return TaskRunInterface|void
+     */
     #[Task("task_2")]
-    public function task_2(): TaskRunInterface
-    {
-
-    }
-
-
-    #[Task("task_2")]
-    public function task_3(): TaskRunInterface
+    public function task_3()
     {
 
     }

@@ -20,16 +20,11 @@ class TaskMessageHandler implements MessageHandlerInterface
     public function __invoke(TaskMessage $taskMessage)
     {
         $process = new Process($taskMessage->asProcess());
-        $process->start();
+        $process->run(function ($type, $buffer) use ($taskMessage) {
+            echo sprintf('%s> %s %s', $type, $buffer, PHP_EOL);
+            $taskMessage->setOutput($buffer);
+        });
 
-        foreach ($process as $type => $data) {
-            if ($process::OUT === $type) {
-                echo "\nRead from stdout: ".$data;
-                $taskMessage->setOutput($data);
-            } else {
-                // $process::ERR === $type
-                echo "\nRead from stderr: ".$data;
-            }
-        }
+        $taskMessage->setStatus($process->isSuccessful()?TaskMessage::SUCCESS:TaskMessage::FAILED);
     }
 }

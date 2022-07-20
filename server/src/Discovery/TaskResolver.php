@@ -36,7 +36,7 @@ class TaskResolver
         }
         $fn = function ($args) use ($dag, $task) {
             if (!method_exists($this->container->get($dag), $task)) {
-                throw new TaskNotFoundException(sprintf('%s is NOT defined in %s', $task, $dag));
+                throw new TaskNotFoundException(sprintf('%s is not defined in %s', $task, $dag));
             }
             return call_user_func([$this->container->get($dag), $task], $args);
         };

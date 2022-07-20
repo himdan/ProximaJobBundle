@@ -28,6 +28,29 @@ class TaskMessage
      * @var ?string
      */
     private $output;
+    /**
+     * @var int $status
+     */
+    private $status;
+
+    const SUCCESS = 0;
+    const FAILED = -1;
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus(int $status): void
+    {
+        $this->status = $status;
+    }
 
     const COMMAND = 'proxima_job:task_run';
 
@@ -101,10 +124,6 @@ class TaskMessage
     {
         $this->output = $output;
     }
-
-
-
-
 
 
 }

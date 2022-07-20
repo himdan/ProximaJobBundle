@@ -15,6 +15,8 @@ use Proxima\JobBundle\Tests\Dags\TestDag;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Component\Stopwatch\StopwatchPeriod;
 
 class TaskMessageHandlerTest extends WebTestCase
 {
@@ -77,10 +79,8 @@ class TaskMessageHandlerTest extends WebTestCase
         $this->messageBus = null;
     }
 
-    public function testInvoke()
+    public function test_task_must_succeed_and_take_over_5_seconds()
     {
-
-
         $message = new TaskMessage(
             TestDag::class,
             'task_1',
@@ -90,10 +90,63 @@ class TaskMessageHandlerTest extends WebTestCase
             ])
         );
 
+        $cb = function () use ($message) {
+
+
+            $handler = $this->messageHandler;
+            $handler($message);
+        };
+
+        $timeDelta = $this->timeMe('task_1', $cb);
+        $this->assertGreaterThan(5000, $timeDelta);
+        $this->assertEquals($message->getStatus(), TaskMessage::SUCCESS);
+    }
+
+    public function test_task_must_fail()
+    {
+        $message = new TaskMessage(
+            TestDag::class,
+            'task_2',
+            \json_encode([])
+        );
         $handler = $this->messageHandler;
         $handler($message);
-        echo $message->getOutput();
-        $this->assertNotNull($message->getOutput());
+        $this->assertEquals($message->getStatus(), TaskMessage::FAILED);
+    }
+
+    public function test_task_must_return_value()
+    {
+        $message = new TaskMessage(
+            TestDag::class,
+            'task_3',
+            \json_encode([
+                'a' => 10,
+                'b' => 20
+            ])
+        );
+        $handler = $this->messageHandler;
+        $handler($message);
+        $this->assertEquals($message->getStatus(), TaskMessage::SUCCESS);
+    }
+
+    /**
+     * @param string $eventName
+     * @param callable $cb
+     * @return mixed
+     */
+    private function timeMe(string $eventName, callable $cb)
+    {
+        $stopwatch = new Stopwatch();
+        // starts event named 'eventName'
+        $event = $stopwatch->start($eventName);
+        $cb();
+        $event->stop();
+        /**
+         * @var StopwatchPeriod $period
+         */
+        foreach ($event->getPeriods() as $period) {
+            return $period->getDuration();
+        }
     }
 
 }

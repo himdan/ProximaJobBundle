@@ -97,7 +97,6 @@ class TaskRunCommandTest extends TestCase
             ->willReturn(true);
 
         $this->expectException(TaskNotFoundException::class);
-        $this->expectExceptionMessage(sprintf('%s is NOT defined in %s', $task, $dag));
         $this->commandTester->execute(['--dag' => $dag, '--task' => $task, '--args' => '{}']);
     }
 
