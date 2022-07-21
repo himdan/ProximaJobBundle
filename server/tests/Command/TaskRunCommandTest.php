@@ -13,7 +13,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Proxima\JobBundle\Command\TaskRunCommand;
 use Proxima\JobBundle\Discovery\TaskNotFoundException;
-use Proxima\JobBundle\Discovery\TaskResolver;
+use Proxima\JobBundle\Discovery\TaskRunner;
 use Proxima\JobBundle\Tests\Dags\TestDag;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -27,7 +27,7 @@ class TaskRunCommandTest extends TestCase
     /** @var CommandTester */
     private $commandTester;
     /**
-     * @var TaskResolver
+     * @var TaskRunner
      */
     private $taskResolver;
     /**
@@ -41,7 +41,7 @@ class TaskRunCommandTest extends TestCase
         $this->container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->taskResolver = new TaskResolver($this->container);
+        $this->taskResolver = new TaskRunner($this->container);
         $application = new Application();
         $application->add(new TaskRunCommand($this->taskResolver));
         $command = $application->find('proxima_job:task_run');

@@ -94,5 +94,6 @@ class DagRegistry implements LoggerAwareInterface
     private function compile(Dag $dag, Task $task)
     {
         echo "\n $dag $task \n";
+
     }
 }

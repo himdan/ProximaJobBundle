@@ -12,7 +12,7 @@ namespace Proxima\JobBundle\Discovery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
-class TaskResolver
+class TaskRunner
 {
     /**
      * @var ContainerInterface $container
