@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libxslt-dev \
         zlib1g-dev \
         libxml2-dev \
+        libsqlite3-dev \
         libpng-dev \
         libzip-dev \
         vim curl debconf subversion git apt-transport-https apt-utils \
@@ -18,10 +19,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libssh-dev \
         sudo \
         ssh \
-        && pecl install amqp \
+        && pecl install amqp  \
         && docker-php-ext-enable amqp\
     && docker-php-ext-install \
         pdo_mysql \
+        pdo_sqlite \
         soap \
         zip \
         dom\
@@ -31,8 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         dom\
         mbstring \
         calendar \
-        intl \
-        pcntl
+        intl
 COPY infra/fpm/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY infra/fpm/custom.ini /usr/local/etc/php/conf.d/custom.ini
 

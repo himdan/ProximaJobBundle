@@ -8,12 +8,16 @@
 
 namespace Proxima\JobBundle\Registry;
 
-
+use Doctrine\ORM\EntityRepository;
 use Proxima\JobBundle\Attributes\Dag;
 use Proxima\JobBundle\Attributes\Task;
+use Proxima\JobBundle\EntityManager\RunTimeEntityManager;
+use Proxima\JobBundle\Repository\TaskRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Finder\Finder;
+use Proxima\JobBundle\Entity\Dag as DagEntity;
+use Proxima\JobBundle\Entity\Task as TaskEntity;
 
 class DagRegistry implements LoggerAwareInterface
 {
@@ -25,6 +29,10 @@ class DagRegistry implements LoggerAwareInterface
      * @var LoggerInterface $logger
      */
     private $logger;
+    /**
+     * @var RunTimeEntityManager $em
+     */
+    private $em;
 
     /**
      * DagRegistry constructor.
@@ -33,6 +41,14 @@ class DagRegistry implements LoggerAwareInterface
     public function __construct(DagKernelInterface $kernel)
     {
         $this->kernel = $kernel;
+    }
+
+    /**
+     * @param RunTimeEntityManager $em
+     */
+    public function setEm(RunTimeEntityManager $em): void
+    {
+        $this->em = $em;
     }
 
 
@@ -44,10 +60,16 @@ class DagRegistry implements LoggerAwareInterface
         $finder->files()->in($projectDir)->name('*.php');
         foreach ($finder as $file) {
             $className = rtrim($namespace, '\\') . '\\' . $file->getFilenameWithoutExtension();
+            echo $className . PHP_EOL;
             if (class_exists($className)) {
                 $this->registerSingleDagInstance($className);
             }
         }
+
+
+
+
+        $this->em->flushAndPurge();
 
     }
 
@@ -72,9 +94,6 @@ class DagRegistry implements LoggerAwareInterface
             $dagInstance = $singleAttribute->newInstance();
             foreach ($reflectionClass->getMethods() as $method) {
 
-                if (!$method->hasReturnType() || $method->getReturnType()->getName() !== TaskRunInterface::class) {
-                    continue;
-                }
                 $attributes = $method->getAttributes(Task::class);
                 foreach ($attributes as $attribute) {
                     /*
@@ -82,7 +101,7 @@ class DagRegistry implements LoggerAwareInterface
                      */
                     $taskInstance = $attribute->newInstance();
 
-                    $this->compile($dagInstance, $taskInstance);
+                    $this->upsert($className, $dagInstance, $taskInstance);
 
                 }
             }
@@ -91,9 +110,67 @@ class DagRegistry implements LoggerAwareInterface
 
     }
 
-    private function compile(Dag $dag, Task $task)
+    private function upsert(
+        string $className,
+        Dag $dag,
+        Task $task)
     {
-        echo "\n $dag $task \n";
+
+        echo $className . PHP_EOL;
+        echo $task . PHP_EOL;
+        $dagEntityInstance = $this->getOrCreateDag($dag, $className);
+        $this->upsertTask($dagEntityInstance, $task);
+        $this->em->persistAndStash($dagEntityInstance);
+
+    }
+
+
+    private function upsertTask(DagEntity $dag, Task $task)
+    {
+        /**
+         * @var TaskRepository $taskRepository
+         */
+        $taskRepository = $this->em->getRepository(TaskEntity::class);
+        $taskEntity = $taskRepository->findOneByDagClassNameAndTaskName(
+            $dag->getClassName(),
+            $task->name
+        );
+        if ($taskEntity instanceof TaskEntity) {
+            return;
+        }
+
+        $taskEntity = new TaskEntity();
+        $taskEntity->setDag($dag);
+        $taskEntity->setName($task->name);
+        $this->em->persistAndStash($taskEntity);
+
+        $dag->addTask($taskEntity);
+
+    }
+
+
+    private function getOrCreateDag(Dag $dag, string $className): DagEntity
+    {
+
+        /**
+         * @var  EntityRepository $dagEntityRepository
+         */
+        $dagEntityRepository = $this->em->getRepository(DagEntity::class);
+        $dagEntityInstance = $dagEntityRepository->findOneBy(
+            [
+                'className' => $className
+            ]
+        );
+        if ($dagEntityInstance instanceof DagEntity) {
+            return $dagEntityInstance;
+        }
+
+
+        $dagEntityInstance = new DagEntity();
+        $dagEntityInstance->setClassName($className);
+        $this->em->persistAndStash($dagEntityInstance);
+        return $dagEntityInstance;
+
 
     }
 }

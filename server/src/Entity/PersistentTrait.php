@@ -8,15 +8,21 @@
 
 namespace Proxima\JobBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 
 trait PersistentTrait
 {
-    private $id;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy:'AUTO')]
+    #[ORM\Column]
+    private ?int $id;
 
     /**
-     * @return mixed
+     * @return int?
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

@@ -49,7 +49,7 @@ class TestDag implements DagRunInterface
     /**
      * @return TaskRunInterface|void
      */
-    #[Task("task_2")]
+    #[Task("task_3")]
     public function task_3()
     {
 

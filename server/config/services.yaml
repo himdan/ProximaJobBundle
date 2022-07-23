@@ -1,8 +1,6 @@
 parameters:
-  proxima_job:
-    dag:
-      namespace: 'App\Dags'
-      root_path: '%kernel.project_dir%../dags'
+  dag_namespace: 'Proxima\JobBundle\Tests\Dags'
+  dag_root_path: '%kernel.project_dir%/tests/dags'
 
 # config/services.yaml
 services:
@@ -23,6 +21,11 @@ services:
   Proxima\JobBundle\Registry\DagKernelInterface:
     alias: Proxima\JobBundle\Registry\DagConfigurator
 
+  Proxima\JobBundle\Registry\DagConfigurator:
+    public: true
+    arguments:
+      - "%dag_namespace%"
+      - "%dag_root_path%"
   Symfony\Component\DependencyInjection\ContainerInterface:
     alias: "service_container"
 
@@ -32,3 +35,19 @@ services:
 
   Proxima\JobBundle\Tests\Dags\TestDag:
     public: true
+
+  run_time_registry:
+    class: Proxima\JobBundle\EntityManager\RunTimeRegistry
+
+  Proxima\JobBundle\EntityManager\RunTimeEntityManager:
+    calls:
+      - setRunTimeRegistry: ["@run_time_registry"]
+
+  run_time_entity_manager:
+    alias: Proxima\JobBundle\EntityManager\RunTimeEntityManager
+
+
+  Proxima\JobBundle\Registry\DagRegistry:
+    public: true
+    calls:
+      - setEm: ["@run_time_entity_manager"]

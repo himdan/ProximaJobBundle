@@ -10,3 +10,9 @@ messenger:
 
 clean:
 	docker compose  down --remove-orphans --volumes
+
+schema_update_test:
+	docker compose exec -u root catapult_console bash -c "bin/console d:s:u --force --env=test"
+
+schema_update_dev:
+	docker compose exec -u root catapult_console bash -c "bin/console d:s:u --force --env=test"
