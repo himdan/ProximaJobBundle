@@ -8,7 +8,13 @@
 
 namespace Proxima\JobBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Class TaskInstance
+ * @package Proxima\JobBundle\Entity
+ */
+#[ORM\Entity]
 class TaskInstance
 {
     use PersistentTrait;
@@ -16,6 +22,7 @@ class TaskInstance
     /**
      * @var ?DagInstance $dagInstance
      */
+    #[ORM\ManyToOne(targetEntity:DagInstance::class, inversedBy:'tasksInstances')]
     private $dagInstance;
 
     /**

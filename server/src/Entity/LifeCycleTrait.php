@@ -8,23 +8,25 @@
 
 namespace Proxima\JobBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 
 trait LifeCycleTrait
 {
     /**
      * @var ?int
      */
-    #[ORM\Column(type:tiny_int, nullable: true)]
+    #[ORM\Column(type:"integer", nullable: true, length: 2)]
     private $status;
     /**
      * @var \DateTimeInterface
      */
-    #[ORM\Column(type:datetime, nullable: true)]
+    #[ORM\Column(type:"datetime", nullable: true)]
     private $startAt;
     /**
      * @var  \DateTimeInterface
      */
-    #[ORM\Column(type:datetime, nullable: true)]
+    #[ORM\Column(type:"datetime", nullable: true)]
     private $endAt;
 
     /**

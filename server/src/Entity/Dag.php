@@ -23,12 +23,17 @@ class Dag
      * @var ?string $className
      */
     #[ORM\Column(type:"string", nullable:true)]
-    private ?string $className;
+    private $className;
     /**
      * @var Task[]|ArrayCollection
      */
     #[ORM\OneToMany(targetEntity:Task::class, mappedBy: 'dag')]
     private $tasks;
+    /**
+     * @var DagInstance[]|ArrayCollection
+     */
+    #[ORM\OneToMany(targetEntity:DagInstance::class, mappedBy: 'dag')]
+    private $instances;
 
     /**
      * Dag constructor.
@@ -36,6 +41,7 @@ class Dag
     public function __construct()
     {
         $this->tasks = new ArrayCollection([]);
+        $this->instances = new ArrayCollection([]);
     }
 
 
@@ -85,6 +91,24 @@ class Dag
     {
         return sprintf('%s', $this->getClassName());
     }
+
+    /**
+     * @return ArrayCollection|DagInstance[]
+     */
+    public function getInstances()
+    {
+        return $this->instances;
+    }
+
+    /**
+     * @param ArrayCollection|DagInstance[] $instances
+     */
+    public function setInstances($instances): void
+    {
+        $this->instances = $instances;
+    }
+
+
 
 
 }

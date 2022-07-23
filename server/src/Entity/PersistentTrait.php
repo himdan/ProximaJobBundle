@@ -13,11 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait PersistentTrait
 {
-
+    /**
+     * @var ?int $id
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy:'AUTO')]
-    #[ORM\Column]
-    private ?int $id;
+    #[ORM\Column(type:"integer")]
+    private $id;
 
     /**
      * @return int?
