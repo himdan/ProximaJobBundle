@@ -26,6 +26,9 @@ class Task
      */
     #[ORM\Column(type:'string', nullable: true)]
     private $name;
+
+    #[ORM\Column(type:'string', nullable: true)]
+    private $workflow;
     /**
      * @var ?Dag $dag
      */
@@ -63,6 +66,38 @@ class Task
     public function setDag($dag): void
     {
         $this->dag = $dag;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+
+    /**
+     * @param mixed $workflow
+     */
+    public function setWorkflow($workflow): void
+    {
+        $this->workflow = $workflow;
     }
 
 

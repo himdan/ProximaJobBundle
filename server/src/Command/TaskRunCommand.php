@@ -9,6 +9,8 @@
 namespace Proxima\JobBundle\Command;
 
 use Proxima\JobBundle\Discovery\TaskRunner;
+use Proxima\JobBundle\IO\CommandArg;
+use Proxima\JobBundle\IO\SubjectResolver;
 use Proxima\JobBundle\Message\TaskMessage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,11 +24,17 @@ class TaskRunCommand extends Command
      * @var TaskRunner $taskResolver
      */
     private $taskResolver;
+    /**
+     * @var SubjectResolver $subjectResolver
+     */
+    private $subjectResolver;
 
-    public function __construct(TaskRunner $taskResolver)
+
+    public function __construct(TaskRunner $taskResolver, SubjectResolver $subjectResolver)
     {
         parent::__construct(TaskMessage::COMMAND);
         $this->taskResolver = $taskResolver;
+        $this->subjectResolver = $subjectResolver;
     }
 
 
@@ -50,8 +58,25 @@ class TaskRunCommand extends Command
         $task = $input->getOption('task');
         $args = @json_decode($input->getOption('args'));
         $args = is_array($args) ? $args : [];
+        $this->denormalizeArgs($args);
         $cb = $this->taskResolver->resolve($dag, $task);
         $cb($args);
         return Command::SUCCESS;
+    }
+
+    private function denormalizeArgs(array &$args)
+    {
+        $cloneArgs = (new \ArrayObject($args))->getArrayCopy();
+        foreach ($cloneArgs as $var => $value) {
+            if (false !== ($resolved = $this->subjectResolver->resolveArgAs(
+                    CommandArg::class,
+                    $var,
+                    $value
+                ))) {
+                $args[$var] = $resolved;
+            }
+
+        }
+
     }
 }

@@ -51,3 +51,6 @@ services:
     public: true
     calls:
       - setEm: ["@run_time_entity_manager"]
+
+  Proxima\JobBundle\Runner\DagInstanceManager:
+    public: true

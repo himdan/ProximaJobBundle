@@ -8,6 +8,7 @@
 
 namespace Proxima\JobBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -25,12 +26,12 @@ class Dag
     #[ORM\Column(type:"string", nullable:true)]
     private $className;
     /**
-     * @var Task[]|ArrayCollection
+     * @var Task[]|ArrayCollection|Collection
      */
     #[ORM\OneToMany(targetEntity:Task::class, mappedBy: 'dag')]
     private $tasks;
     /**
-     * @var DagInstance[]|ArrayCollection
+     * @var DagInstance[]|ArrayCollection|Collection
      */
     #[ORM\OneToMany(targetEntity:DagInstance::class, mappedBy: 'dag')]
     private $instances;
@@ -62,9 +63,9 @@ class Dag
     }
 
     /**
-     * @return Task[]
+     * @return Task[]|ArrayCollection|Collection
      */
-    public function getTasks(): array
+    public function getTasks()
     {
         return $this->tasks;
     }
@@ -78,7 +79,8 @@ class Dag
     }
 
 
-    public function addTask(Task $task){
+    public function addTask(Task $task)
+    {
 
     }
 

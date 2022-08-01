@@ -17,14 +17,19 @@ class Task
      * @var ?string
      */
     public $name = "";
+    /**
+     * @var ?string
+     */
+    public $workflow = null;
 
     /**
      * Task constructor.
      * @param string $name
      */
-    public function __construct(string $name)
+    public function __construct(string $name, ?string $workflow=null)
     {
         $this->name = $name;
+        $this->workflow = $workflow;
     }
 
 

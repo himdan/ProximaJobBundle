@@ -24,6 +24,11 @@ class TaskInstance
      */
     #[ORM\ManyToOne(targetEntity:DagInstance::class, inversedBy:'tasksInstances')]
     private $dagInstance;
+    /**
+     * @var Task $task
+     */
+    #[ORM\ManyToOne(targetEntity:Task::class)]
+    private $task;
 
     /**
      * TaskInstance constructor.
@@ -41,6 +46,26 @@ class TaskInstance
     {
         return $this->dagInstance;
     }
+
+    /**
+     * @param Task $task
+     */
+    public function setTask(Task $task): void
+    {
+        $this->task = $task;
+    }
+
+    /**
+     * @return Task
+     */
+    public function getTask(): Task
+    {
+        return $this->task;
+    }
+
+
+
+
 
 
 

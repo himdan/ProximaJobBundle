@@ -11,6 +11,8 @@ namespace Proxima\JobBundle\Entity;
 
 class State
 {
+    const REGISTER = -5;
+    const SCHEDULED = 0;
     const QUEUED = 1;
     const RUNNING = 2;
     const STALED = 3;

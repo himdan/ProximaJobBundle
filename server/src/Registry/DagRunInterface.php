@@ -8,11 +8,12 @@
 
 namespace Proxima\JobBundle\Registry;
 
+use Symfony\Component\Workflow\WorkflowInterface;
 
 interface DagRunInterface
 {
     /**
-     * @return callable[]
+     * @return callable[]| WorkflowInterface
      */
-    public function define(): array;
+    public function define();
 }

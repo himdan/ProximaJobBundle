@@ -14,11 +14,14 @@ use PHPUnit\Framework\TestCase;
 use Proxima\JobBundle\Command\TaskRunCommand;
 use Proxima\JobBundle\Discovery\TaskNotFoundException;
 use Proxima\JobBundle\Discovery\TaskRunner;
+use Proxima\JobBundle\IO\SubjectResolver;
 use Proxima\JobBundle\Tests\Dags\TestDag;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\Serializer\SerializerInterface;
 
 
 class TaskRunCommandTest extends TestCase
@@ -41,9 +44,13 @@ class TaskRunCommandTest extends TestCase
         $this->container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $logger = $this->createMock(LoggerInterface::class);
+        $argsResolver = $this->createMock(SubjectResolver::class);
+        $argsResolver->setLogger($logger);
+
         $this->taskResolver = new TaskRunner($this->container);
         $application = new Application();
-        $application->add(new TaskRunCommand($this->taskResolver));
+        $application->add(new TaskRunCommand($this->taskResolver, $argsResolver));
         $command = $application->find('proxima_job:task_run');
         $this->commandTester = new CommandTester($command);
     }

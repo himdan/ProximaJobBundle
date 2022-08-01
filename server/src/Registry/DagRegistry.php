@@ -136,12 +136,14 @@ class DagRegistry implements LoggerAwareInterface
             $task->name
         );
         if ($taskEntity instanceof TaskEntity) {
+            $taskEntity->setWorkflow($task->workflow);
             return;
         }
 
         $taskEntity = new TaskEntity();
         $taskEntity->setDag($dag);
         $taskEntity->setName($task->name);
+        $taskEntity->setWorkflow($task->workflow);
         $this->em->persistAndStash($taskEntity);
 
         $dag->addTask($taskEntity);

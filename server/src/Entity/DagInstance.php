@@ -12,10 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity]
-class DagInstance
+class DagInstance implements SubjectInterface
 {
     use PersistentTrait;
+
+    use CurrentPlaceTrait;
     use LifeCycleTrait;
+    use SubjectTrait;
 
     /**
      * @var ?Dag $dag

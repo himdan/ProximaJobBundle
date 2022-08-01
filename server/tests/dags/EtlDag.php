@@ -12,14 +12,15 @@ use Proxima\JobBundle\Registry\DagRunInterface;
 use Proxima\JobBundle\Attributes\Dag;
 use Proxima\JobBundle\Attributes\Task;
 use Proxima\JobBundle\Registry\TaskRunInterface;
+use Symfony\Component\Workflow\Workflow;
 
 #[DAG("etl_dag", "test")]
 class EtlDag implements DagRunInterface
 {
     /**
-     * @return callable[]
+     * @return callable[]|Workflow
      */
-    public function define(): array
+    public function define()
     {
         return [
             [$this, 'extract'],
